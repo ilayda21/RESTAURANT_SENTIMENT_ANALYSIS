@@ -1,6 +1,8 @@
 import json
 import pandas as pd
+from regex import RegexReplacer
 
+rp = RegexReplacer()
 cuisines = ["American (Traditional)", "American (New)", "Latin American", "Italian", "Thai",
             "Chinese", "Japanese", "Turkish", "French", "Mexican", "German", "Polish", "Greek",
             "Pakistani", "Ethiopian", "Taiwanese", "Middle Eastern", "Indian", "Korean", "Vietnamese", "Canadian", ]
@@ -50,6 +52,7 @@ for line in lines1:
 
     if text != None:
         if star!= None:
+            text = rp.replace(text)
             line_list.append(text)
             line_list.append(star)
             list.append(line_list)
