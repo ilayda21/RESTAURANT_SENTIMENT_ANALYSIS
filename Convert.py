@@ -1,8 +1,30 @@
 import json
 import pandas as pd
 from regex import RegexReplacer
+from PorterStemmer import *
 
-rp = RegexReplacer()
+rp = RegexReplacer() # Here the replaces is initialized.
+p = PorterStemmer()#Here the porter stemmer is initialized.
+
+
+#This function is used to use stemmer.
+def stemm(line):
+    line += " "
+    line1 = ""
+    element = ''
+    for c in line:
+        if c.isalpha():
+            element += c.lower()
+        else:
+            if element:
+                element = p.stem(element, 0,len(element)-1)
+                line1 += element
+                line1 += " "
+                element = ''
+
+    return line1
+
+
 cuisines = ["American (Traditional)", "American (New)", "Latin American", "Italian", "Thai",
             "Chinese", "Japanese", "Turkish", "French", "Mexican", "German", "Polish", "Greek",
             "Pakistani", "Ethiopian", "Taiwanese", "Middle Eastern", "Indian", "Korean", "Vietnamese", "Canadian", ]
@@ -53,10 +75,10 @@ for line in lines1:
     if text != None:
         if star!= None:
             text = rp.replace(text)
+            text = stemm(text)
             line_list.append(text)
             line_list.append(star)
             list.append(line_list)
 
 my_df1 = pd.DataFrame(list)
 my_df1.to_csv('review.csv', index=False, header=False)
-
