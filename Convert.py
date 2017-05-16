@@ -11,6 +11,8 @@ stop = set(stopwords.words('english'))
 rp = RegexReplacer() # Here the replaces is initialized.
 p = PorterStemmer()#Here the porter stemmer is initialized.
 
+business_id = []
+
 
 #This function is used to use stemmer.
 def stemm(line):
@@ -62,6 +64,8 @@ for line in lines:
     if (cat != None) and (name!=None):
         if ("restaurants" in cat) or ("Restaurants" in cat):
             if (star!= None) and (b_id != None):
+                if b_id not in business_id:
+                    business_id.append(b_id)
                 line_list.append(b_id)
                 line_list.append(name)
                 line_list.append(cat)
@@ -70,6 +74,7 @@ for line in lines:
 
 my_df = pd.DataFrame(list)
 my_df.to_csv('business.csv', index=False, header=False)
+
 
 list = []
 lines1 = open("yelp_academic_dataset_review.json",encoding='utf-8').readlines()
@@ -89,19 +94,21 @@ for line in lines1:
 
     if text != None:
         if (star!= None) and (b_id != None):
-            text = text.lower()
-            text = rp.replace(text)
-            text = re.sub("not ","not_",text)
-            filtered_words = ""
-            for i in text.split():
-                if i not in stop:
-                    filtered_words+=i
-                    filtered_words+=" "
-            text = stemm(filtered_words)
-            line_list.append(b_id)
-            line_list.append(text)
-            line_list.append(star)
-            list.append(line_list)
+            if b_id in business_id:
+                text = text.lower()
+                text = rp.replace(text)
+                text = re.sub("not ","not_",text)
+                filtered_words = ""
+                for i in text.split():
+                    if i not in stop:
+                        filtered_words+=i
+                        filtered_words+=" "
+                text = stemm(filtered_words)
+                line_list.append(b_id)
+                line_list.append(text)
+                line_list.append(star)
+                list.append(line_list)
 
-my_df1 = pd.DataFrame(list)
-my_df1.to_csv('review.csv', index=False, header=False)
+if list is not None:
+    my_df1 = pd.DataFrame(list)
+    my_df1.to_csv('review.csv', index=False, header=False)
