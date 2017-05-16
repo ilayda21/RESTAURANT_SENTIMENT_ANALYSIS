@@ -71,10 +71,10 @@ for line in lines:
 my_df = pd.DataFrame(list)
 my_df.to_csv('business.csv', index=False, header=False)
 
-
 list = []
 lines1 = open("yelp_academic_dataset_review.json",encoding='utf-8').readlines()
 for line in lines1:
+    b_id = None
     text = None
     star = None
     line_list = []
@@ -84,9 +84,11 @@ for line in lines1:
             text = v
         if k == "stars":
             star = v
+        if k=="business_id":
+            b_id = v
 
     if text != None:
-        if star!= None:
+        if (star!= None) and (b_id != None):
             text = text.lower()
             text = rp.replace(text)
             text = re.sub("not ","not_",text)
@@ -96,6 +98,7 @@ for line in lines1:
                     filtered_words+=i
                     filtered_words+=" "
             text = stemm(filtered_words)
+            line_list.append(b_id)
             line_list.append(text)
             line_list.append(star)
             list.append(line_list)
